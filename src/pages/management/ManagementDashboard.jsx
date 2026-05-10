@@ -4,8 +4,10 @@ import { LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tool
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 
-const API_BASE  = 'http://localhost:5000/api/management';
-const AUTH_BASE = 'http://localhost:5000/api/auth';
+// ✅ FIXED: Dynamic API URLs instead of hardcoded localhost
+const BASE      = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_BASE  = `${BASE}/management`;
+const AUTH_BASE = BASE;
 
 const ManagementDashboard = () => {
   const navigate = useNavigate();
@@ -38,7 +40,7 @@ const ManagementDashboard = () => {
 
   const fetchPendingUsers = async () => {
     try {
-      const res = await axios.get(`${AUTH_BASE}/pending-users`, authHeaders);
+      const res = await axios.get(`${AUTH_BASE}/auth/pending-users`, authHeaders);
       setPendingUsers(res.data.users || []);
     } catch (err) {
       console.error('Pending users fetch failed:', err);
@@ -48,7 +50,7 @@ const ManagementDashboard = () => {
   const handleApprove = async (userId) => {
     setActionLoading(userId);
     try {
-      await axios.put(`${AUTH_BASE}/approve/${userId}`, {}, authHeaders);
+      await axios.put(`${AUTH_BASE}/auth/approve/${userId}`, {}, authHeaders);
       setPendingUsers(prev => prev.filter(u => u._id !== userId));
     } catch (err) {
       console.error('Approval failed:', err);
@@ -61,7 +63,7 @@ const ManagementDashboard = () => {
     if (!rejectModal) return;
     setActionLoading(rejectModal._id);
     try {
-      await axios.put(`${AUTH_BASE}/reject/${rejectModal._id}`, { reason: rejectReason }, authHeaders);
+      await axios.put(`${AUTH_BASE}/auth/reject/${rejectModal._id}`, { reason: rejectReason }, authHeaders);
       setPendingUsers(prev => prev.filter(u => u._id !== rejectModal._id));
       setRejectModal(null);
       setRejectReason('');
