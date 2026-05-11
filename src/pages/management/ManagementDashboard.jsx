@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 
 // ✅ FIXED: Dynamic API URLs instead of hardcoded localhost
-const API_BASE = import.meta.env.VITE_API_URL || 'https://hse-backend-three.vercel.app';
+const BASE      = import.meta.env.VITE_API_URL || 'https://hse-backend-three.vercel.app';
 const API_BASE  = `${BASE}/management`;
 const AUTH_BASE = BASE;
 
