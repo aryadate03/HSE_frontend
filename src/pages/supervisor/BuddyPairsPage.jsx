@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import api from '../../services/api';
 import { useToast } from '../../context/ToastContext';
 
+const API_BASE = import.meta.env.VITE_API_URL || 'https://hse-backend-three.vercel.app';
+
 const TASK_TYPES = [
   { value: 'general',           label: '🔧 General' },
   { value: 'scaffolding',       label: '🏗️ Scaffolding' },
@@ -67,7 +69,7 @@ export default function BuddyPairsPage() {
   const handleResetPairs = async () => {
     if (!window.confirm('Delete all today\'s pairs and recreate?')) return;
     try {
-      await fetch('http://localhost:5000/api/debug/reset-pairs');
+      await fetch(`${API_BASE}/api/debug/reset-pairs`);
       await fetchData();
     } catch (err) {
       toast.error('Failed to reset pairs.');
