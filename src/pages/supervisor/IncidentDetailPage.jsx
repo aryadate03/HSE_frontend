@@ -66,7 +66,6 @@ const IncidentDetailPage = () => {
   const [reportContent, setReportContent] = useState('');
   const [reportSummary, setReportSummary] = useState('');
 
-  // ✅ NEW: Specialization suggestion state
   const [suggestedOfficer,  setSuggestedOfficer]  = useState(null);
   const [allOfficers,       setAllOfficers]        = useState([]);
   const [selectedOfficerId, setSelectedOfficerId]  = useState('');
@@ -111,7 +110,6 @@ const IncidentDetailPage = () => {
     }
   };
 
-  // ✅ NEW: Open forward modal and fetch suggested officer
   const handleOpenForwardModal = async () => {
     setForwardModal(true);
     try {
@@ -120,11 +118,10 @@ const IncidentDetailPage = () => {
       setAllOfficers(data.allOfficers || []);
       if (data.suggested) setSelectedOfficerId(data.suggested._id);
     } catch {
-      // Non-fatal — forward still works without suggestion
+      // Non-fatal
     }
   };
 
-  // ✅ UPDATED: send selectedOfficerId with forward request
   const handleForward = async () => {
     setSaving(true);
     try {
@@ -183,7 +180,6 @@ const IncidentDetailPage = () => {
     </div>
   );
 
-  // Safe field accessors
   const incidentTitle = incident.title || incident.description?.substring(0, 80) || 'Untitled';
   const incidentType  = incident.type  || incident.incidentType?.replace(/_/g, ' ') || '—';
   const incidentLocation = (() => {
@@ -207,6 +203,15 @@ const IncidentDetailPage = () => {
     width: '100%', padding: '10px 14px', background: 'rgba(255,255,255,0.05)',
     border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px',
     color: '#e8eaf0', fontSize: '13px', outline: 'none', boxSizing: 'border-box',
+  };
+
+  // ✅ Select ke liye alag style — solid dark background zaroori hai
+  const selectStyle = {
+    ...inputStyle,
+    background: '#0f1729',
+    color: '#e8eaf0',
+    colorScheme: 'dark',
+    marginBottom: '16px',
   };
 
   return (
@@ -246,7 +251,6 @@ const IncidentDetailPage = () => {
 
             {isActionable && (
               <>
-                {/* ✅ UPDATED: onClick now calls handleOpenForwardModal */}
                 <button onClick={handleOpenForwardModal}
                   style={{ background: '#16a34a', border: 'none', color: 'white', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '6px' }}>
                   ✅ Forward to Safety Officer
@@ -410,13 +414,12 @@ const IncidentDetailPage = () => {
         </div>
       </div>
 
-      {/* ✅ UPDATED Forward Modal — with suggested officer card + dropdown */}
+      {/* Forward Modal */}
       <Modal isOpen={forwardModal} onClose={() => setForwardModal(false)} title="✅ Forward to Safety Officer">
         <p style={{ fontSize: '13px', color: '#8892a4', marginBottom: '16px' }}>
           This incident will be forwarded to the Safety Officer for investigation.
         </p>
 
-        {/* Suggested officer card */}
         {suggestedOfficer && (
           <div style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: '10px', padding: '12px', marginBottom: '16px' }}>
             <p style={{ color: '#4ade80', fontSize: '11px', fontWeight: '700', margin: '0 0 4px', textTransform: 'uppercase' }}>
@@ -431,7 +434,7 @@ const IncidentDetailPage = () => {
           </div>
         )}
 
-        {/* Officer dropdown */}
+        {/* ✅ FIXED: Dark background select so options are visible */}
         {allOfficers.length > 0 && (
           <>
             <label style={{ display: 'block', fontSize: '12px', color: '#8892a4', marginBottom: '6px' }}>
@@ -440,11 +443,13 @@ const IncidentDetailPage = () => {
             <select
               value={selectedOfficerId}
               onChange={e => setSelectedOfficerId(e.target.value)}
-              style={{ ...inputStyle, marginBottom: '16px' }}
+              style={selectStyle}
             >
-              <option value="">Select officer manually…</option>
+              <option value="" style={{ background: '#0f1729', color: '#8892a4' }}>
+                Select officer manually…
+              </option>
               {allOfficers.map(o => (
-                <option key={o._id} value={o._id}>
+                <option key={o._id} value={o._id} style={{ background: '#0f1729', color: '#e8eaf0' }}>
                   {o.name} — {o.specialization?.replace(/_/g, ' ') || 'No domain'} ({o.department})
                 </option>
               ))}
