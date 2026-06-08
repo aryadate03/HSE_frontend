@@ -205,7 +205,6 @@ const IncidentDetailPage = () => {
     color: '#e8eaf0', fontSize: '13px', outline: 'none', boxSizing: 'border-box',
   };
 
-  // ✅ Select ke liye alag style — solid dark background zaroori hai
   const selectStyle = {
     ...inputStyle,
     background: '#0f1729',
@@ -303,15 +302,15 @@ const IncidentDetailPage = () => {
             )}
           </div>
 
-          {/* Photos */}
+          {/* Photos — FIXED: using photo.url directly (Cloudinary URL) */}
           {incident.photos?.length > 0 && (
             <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '16px', padding: '20px', border: '1px solid rgba(255,255,255,0.07)' }}>
               <h3 style={{ margin: '0 0 12px', fontSize: '14px', fontWeight: '600', color: '#e8eaf0' }}>Photos ({incident.photos.length})</h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
                 {incident.photos.map((photo, i) => (
-                  <a key={i} href={`/uploads/${photo.filename || photo.url}`} target="_blank" rel="noopener noreferrer"
+                  <a key={i} href={photo.url} target="_blank" rel="noopener noreferrer"
                     style={{ aspectRatio: '1', borderRadius: '8px', overflow: 'hidden', display: 'block', background: '#1e2537', border: '1px solid rgba(255,255,255,0.07)' }}>
-                    <img src={`/uploads/${photo.filename || photo.url}`} alt={`Photo ${i + 1}`}
+                    <img src={photo.url} alt={`Photo ${i + 1}`}
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </a>
                 ))}
@@ -434,7 +433,6 @@ const IncidentDetailPage = () => {
           </div>
         )}
 
-        {/* ✅ FIXED: Dark background select so options are visible */}
         {allOfficers.length > 0 && (
           <>
             <label style={{ display: 'block', fontSize: '12px', color: '#8892a4', marginBottom: '6px' }}>
